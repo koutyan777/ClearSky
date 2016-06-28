@@ -2809,28 +2809,74 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				}
 				break;
 			case ProtocolInfo::DROP_ITEM_PACKET:
-				if($this->spawned === false or $this->blocked === true or !$this->isAlive()){
-					break;
-				}
-				if(!$this->inventory->contains($packet->item)) {
-					$this->inventory->sendContents($this); //Refresh the inventory to do useless stuff
-					break;
-				}
-				$slot = $this->inventory->first($packet->item);
-				if($slot == -1){break;}
-				$item = $this->inventory->getItem($slot);
-				$ev = new PlayerDropItemEvent($this, $item);
-				$this->server->getPluginManager()->callEvent($ev);
-				if($ev->isCancelled()){
-					$this->inventory->sendSlot($slot, $this);
-					break;
-				}
-
-				$this->inventory->remove($item);
-				$motion = $this->getDirectionVector()->multiply(0.4);
-				$this->level->dropItem($this->add(0, 1.3, 0), $item, $motion, 40);
-				$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_ACTION, false);
+			if($this->spawned === false or $this->blocked === true or !$this->isAlive()){
 				break;
+			}
+			
+			$replacementItem = Item::get(Item::AIR, 0, 1);
+			$droppedItem = null;
+			
+			// We can't just assume that we're dropping the item in hand because
+			// on the Windows 10 Edition you can drop items directly from inventories
+			if (count($this->getPickedupItems()) > 0) {
+				foreach ($this->getPickedupItems() as $k => $i) {
+					if ($packet->item->deepEquals($i)) {
+						$remaining = $i->getCount() - $packet->item->getCount();
+						if ($remaining < 0) {
+							$this->kick("Cannot drop more of an item than you have!");
+							break;
+						} else if ($remaining == 0)
+							$this->removePickedupItem($k);
+						else
+							$i->setCount($remaining);
+			
+						$droppedItem = $packet->item;
+						// Nothing to replace when dropping from inventory
+						$replacementItem = null;
+					}
+				}
+			} else {
+				$itemInHand = clone $this->inventory->getItemInHand();
+				if (!$itemInHand->deepEquals($packet->item)) {
+					// The block held and the block being dropped is not the same
+					break;
+				} elseif ($itemInHand->getCount() != $packet->item->getCount()) {
+					// The only difference is that the amount dropped differs
+					$remaining = $itemInHand->getCount() - $packet->item->getCount();
+					if ($remaining < 0) {
+						// The client is attempting to drop more of an item than in hand
+						break;
+					} else {
+						$itemInHand->setCount($remaining);
+						$replacementItem = $itemInHand;
+						$droppedItem = $packet->item;
+					}
+				} else {
+					// Dropped everyting in slot
+					$droppedItem = $itemInHand;
+				}
+			}
+			
+			if (!$droppedItem)
+				break;
+			
+			$ev = new PlayerDropItemEvent($this, $droppedItem);
+			$this->server->getPluginManager()->callEvent($ev);
+			if($ev->isCancelled()){
+				$this->inventory->sendContents($this);
+				break;
+			}
+ 
+			if ($replacementItem)
+				$this->inventory->setItemInHand($replacementItem);
+			
+			$motion = $this->getDirectionVector()->multiply(0.4);
+ 
+			// TODO: Stack nearby item drops
+			$this->level->dropItem($this->add(0, 1.3, 0), $droppedItem, $motion, 40);
+ 
+			$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_ACTION, false);
+			break;
 			case ProtocolInfo::TEXT_PACKET:
 				if($this->spawned === false or !$this->isAlive()){
 					break;
