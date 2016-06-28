@@ -2020,7 +2020,8 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 								$remainingPickedup = $i->getCount() - $amountPlaced;
 	
 								if (!$i->getCount() >= $newItem->getCount() || $remainingPickedup < 0) {
-									$this->kick("You attempted to place more of an item than you have.");
+									#$this->kick("You attempted to place more of an item than you have.");
+									$this->server->getLogger()->debug("Player ".$this->username." attempted to do something wrong with his inventory. That's all we know.");
 									return;
 								}
 	
@@ -2029,7 +2030,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 								else
 									$this->removePickedupItem($k);
 	
-								$this->server->getLogger()->debug("You picked up and placed: " . $i);
+								$this->server->getLogger()->debug($this->username." picked up and placed: " . $i);
 								$inventory->setItem($slot, $newItem);
 	
 								break;
@@ -2065,7 +2066,8 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 						$remainingPickedup = $i->getCount() - $newItem->getCount();
 	
 						if (!$i->getCount() >= $newItem->getCount() || $remainingPickedup < 0) {
-							$this->kick("You attempted to place more of an item than you have.");
+							#$this->kick("You attempted to place more of an item than you have.");
+							$this->server->getLogger()->debug("Player ".$this->username." attempted to do something wrong with his inventory. That's all we know.");
 							return;
 						}
 	
@@ -2074,7 +2076,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 						else
 							$this->removePickedupItem($k);
 	
-						$this->server->getLogger()->info("You picked up and placed: " . $i);
+						$this->server->getLogger()->info($this->username." picked up and placed: " . $i);
 						$inventory->setItem($slot, $newItem);
 						break;
 					}
@@ -2094,7 +2096,8 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 						$remainingPickedup = $i->getCount() - $newItem->getCount();
 	
 						if (!$i->getCount() >= $newItem->getCount() || $remainingPickedup < 0) {
-							$this->kick("You attempted to place more of an item than you have.");
+							#$this->kick("You attempted to place more of an item than you have.");
+							$this->server->getLogger()->debug("Player ".$this->username." attempted to do something wrong with his inventory. That's all we know.");
 							return;
 						}
 	
