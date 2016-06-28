@@ -160,6 +160,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	private $clientSecret;
 	//* @var Item[] */
 	protected $pickedupItems = [];
+	protected $maxPickupableItems = 10; // 9 crafting, 1 held
 
 	/** @var Vector3 */
 	public $speed = null;
@@ -576,63 +577,65 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	}
 
 	/**
-	 *
-	 * @return permission\PermissionAttachmentInfo[]
-	 */
+	*
+	* @return permission\PermissionAttachmentInfo[]
+	*/
 	public function getEffectivePermissions(){
 		return $this->perm->getEffectivePermissions();
 	}
 
-		public function addPickedupItem(Item $item) {
-			if (count($this->getPickedupItems()) > 5 and !$this->isCreative())
-				throw new \OutOfRangeException("Items array size cannot be greater than 5.");
+	public function addPickedupItem(Item $item, bool $ignoreItemCount = false){
+		if(count($this->getPickedupItems()) >= $this->maxPickupableItems and !$this->isCreative() and !$ignoreItemCount){
+			throw new \OutOfRangeException("Items array size cannot be greater than {$this->maxPickupableItems}."); //TODO: ErrStyle fix
+		}
 	
-			$appended = false;
+		$appended = false;
 	
-			// Check if we already picked up the same item and if so append it onto
-			// existing picked up items.
-			foreach ($this->getPickedupItems() as $i) {
-				if ($i->deepEquals($item) and $i->getCount() < $i->getMaxStackSize()) {
+		// Check if we already picked up the same item and if so append it onto
+		// existing picked up items.
+		foreach ($this->getPickedupItems() as $i) {
+			if ($i->deepEquals($item) and $i->getCount() < $i->getMaxStackSize()) {
 	
-					$amountFree = $i->getMaxStackSize() - $i->getCount();
+				$amountFree = $i->getMaxStackSize() - $i->getCount();
 	
-					if ($amountFree <= 0)
-						continue;
-					else {
-						if ($amountFree < $item->getCount()) {
-							$i->setCount($i->getMaxStackSize());
-							$item->setCount($item->getCount() - $amountFree);
-						} elseif ($amountFree == $item->getCount()) {
-							$i->setCount($i->getMaxStackSize());
-							$appended = true;
-							break;
-						} else {
-							$i->setCount($i->getCount() + $item->getCount());
-							$appended = true;
-							break;
-						}
+				if ($amountFree <= 0)
+					continue;
+				else {
+					if ($amountFree < $item->getCount()) {
+						$i->setCount($i->getMaxStackSize());
+						$item->setCount($item->getCount() - $amountFree);
+					} elseif ($amountFree == $item->getCount()) {
+						$i->setCount($i->getMaxStackSize());
+						$appended = true;
+						break;
+					} else {
+						$i->setCount($i->getCount() + $item->getCount());
+						$appended = true;
+						break;
 					}
 				}
 			}
-	
-			if (!$appended)
-				$this->pickedupItems[] = $item;
 		}
 	
-		public function removePickedupItem($index) {
-			unset($this->pickedupItems[$index]);
-		}
+		if (!$appended)
+			$this->pickedupItems[] = $item;
+	}
 	
-		public function setPickedupItems(Array $items) {
-			if (count($items) > 5)
-				throw new \OutOfRangeException("Items array size must be 5.");
-			$this->pickedupItems = $items;
+	public function removePickedupItem($index){
+		unset($this->pickedupItems[$index]);
+	}
+	
+	public function setPickedupItems(Array $items, bool $ignoreItemCount = false){
+		if(count($items) > $this->maxPickupableItems and !$ignoreItemCount){
+			throw new \OutOfRangeException("Items array size must be {$this->maxPickupableItems}."); //TODO: ErrStyle fix
 		}
+		$this->pickedupItems = $items;
+	}
 	
 	
-		public function getPickedupItems() {
-			return $this->pickedupItems;
-		}
+	public function getPickedupItems() {
+		return $this->pickedupItems;
+	}
 
 	/**
 	 *
@@ -2870,6 +2873,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 			$this->server->getPluginManager()->callEvent($ev);
 			if($ev->isCancelled()){
 				$this->inventory->sendContents($this);
+				$this->setPickedupItems($pickedupItems);
 				break;
 			}
  
@@ -2977,8 +2981,53 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 					}
 				}
 				$canCraft = true;
+				$giveItem = true;
+				// Keep a local copy so we can revert changes if needed
+				$pickedupItems = $this->getPickedupItems();
+	
+				if (empty($packet->input)) {
+					// Get a list of recipes that can be used to craft the result.
+					$recipes = $this->server->getCraftingManager()->getRecipesByItem($packet->output[0]);
+					// As soon as a recipe whose ingridients can be satisfied is found,
+					// use it. This shouldn't cause any issues for the few items that have
+					// multiple recipes they can be crafted with.
+					$canCraft = false;
+					foreach ($recipes as $r) {
+						$need = $r->getIngredientList();
+						$have = [];
 
-				if($recipe instanceof ShapedRecipe){
+						foreach ($need as $i){
+							foreach ($this->getPickedupItems() as $key => $item) {
+								if ($need == $have) // We already have all the things we need
+									break;
+								if ($item->deepEquals($i, $i->getDamage() !== null, $i->getCompoundTag() !== null)) {
+									$amountRemaining = $item->getCount() - $i->getCount();
+
+									if ($amountRemaining > 0) {
+										$item->setCount($amountRemaining);
+										$have[] = $i;
+									} elseif ($amountRemaining <= 0) {
+										// Relatively safe operation here as items stack
+										$have[] = $item;
+										$this->removePickedupItem($key);
+									}
+								}
+							}
+						}
+						if ($need != $have) {
+							// Can't craft
+							$this->setPickedupItems($pickedupItems);
+							continue;
+						} else {
+							// Reset the recipe to the correct one
+							$recipe = $r;
+							$canCraft = true;
+							$giveItem = false;
+							$this->addPickedupItem(clone $recipe->getResult(), true);
+							break;
+						}
+					}
+				}elseif($recipe instanceof ShapedRecipe){
 					for($x = 0; $x < 3 and $canCraft; ++$x){
 						for($y = 0; $y < 3; ++$y){
 							$item = $packet->input[$y * 3 + $x];
@@ -3025,6 +3074,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				if(!$canCraft or !$recipe->getResult()->deepEquals($result)){
 					$this->server->getLogger()->debug("Unmatched recipe " . $recipe->getId() . " from player " . $this->getName() . ": expected " . $recipe->getResult() . ", got " . $result . ", using: " . implode(", ", $ingredients));
 					$this->inventory->sendContents($this);
+					$this->setPickedupItems($pickedupItems);
 					break;
 				}
 				$used = array_fill(0, $this->inventory->getSize(), 0);
@@ -3045,6 +3095,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				if(!$canCraft){
 					$this->server->getLogger()->debug("Unmatched recipe " . $recipe->getId() . " from player " . $this->getName() . ": client does not have enough items, using: " . implode(", ", $ingredients));
 					$this->inventory->sendContents($this);
+					$this->setPickedupItems($pickedupItems);
 					break;
 				}
 				$this->server->getPluginManager()->callEvent($ev = new CraftItemEvent($this, $ingredients, $recipe));
@@ -3065,10 +3116,13 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 					}
 					$this->inventory->setItem($slot, $newItem);
 				}
-				$extraItem = $this->inventory->addItem($recipe->getResult());
-				if(count($extraItem) > 0){
-					foreach($extraItem as $item){
-					//	$this->level->dropItem($this, $item);
+				// Avoid item client-sided duplicating in Windows 10 Edition as the item is already created
+				if ($giveItem) {
+					$extraItem = $this->inventory->addItem($recipe->getResult());
+					if(count($extraItem) > 0){
+						foreach($extraItem as $item){
+							$this->level->dropItem($this, $item);
+						}
 					}
 				}
 				switch($recipe->getResult()->getId()){
