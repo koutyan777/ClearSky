@@ -2108,6 +2108,12 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				}
 	
 				if ($found == false) {
+					// Hotbar <-> slot mapping change
+					if ($this->inventory->getItem($hotbarSlot = $this->inventory->getHotbarSlotIndex($slot))->deepEquals($newItem)) {
+						$this->inventory->setItem($hotbarSlot, $oldItem);
+						$this->inventory->setItem($slot, $newItem);
+						return;
+					}
 					$this->kick("You attempted to swap for an item that you don't have.");
 					return;
 				}
