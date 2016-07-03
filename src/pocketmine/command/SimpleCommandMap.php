@@ -47,6 +47,7 @@ use pocketmine\event\TranslationContainer;
 use pocketmine\Server;
 use pocketmine\utils\MainLogger;
 use pocketmine\utils\TextFormat;
+use pocketmine\command\defaults\SummonCommand;
 
 class SimpleCommandMap implements CommandMap{
 
@@ -100,6 +101,7 @@ class SimpleCommandMap implements CommandMap{
 		$this->register("pocketmine", new TimeCommand("time"));
 		$this->register("pocketmine", new TimingsCommand("timings"));
 		$this->register("pocketmine", new ReloadCommand("reload"));
+		$this->register("pocketmine", new SummonCommand("summon"));
 		$this->register("pocketmine", new WeatherCommand("weather"));
 		#$this->register("pocketmine", new UpgradeCommand("dist-upgrade"));
 
