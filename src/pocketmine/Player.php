@@ -281,50 +281,64 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	* @deprecated
 	*/
 	public function getExperience(){
-		return $this->getExp();
+		return $this->getXpProgress();
 	}
 	/**
 	* @deprecated
 	*/
 	public function setExperience($exp){
-		$this->setExp($exp);
+		$this->setXpProgress($exp);
 	}
 	/**
 	* @deprecated
 	*/
 	public function addExperience($exp){
-		$this->addExp($exp);
+		$this->setXpProgress($this->getXpProgress() + $exp);
+	}
+	/**
+	* @deprecated
+	*/
+	public function getExp(){
+		return $this->getXpProgress();
+	}
+	/**
+	* @deprecated
+	*/
+	public function setExp($exp){
+		$this->setXpProgress($exp);
+	}
+	/**
+	* @deprecated
+	*/
+	public function addExp($exp){
+		$this->addExperience($exp);
+	}
+	/**
+	* @deprecated
+	*/
+	public function getTotalExp(){
+		return $this->getTotalXp();
+	}
+	/**
+	* @deprecated
+	*/
+	public function getExpLevel(){
+		return $this->getXpLevel();
+	}
+	/**
+	* @deprecated
+	*/
+	public function setExpLevel($level){
+		return $this->setXpLevel($level);
 	}
 	
-	public function getExp(){
-		return $this->attributeMap->getAttribute(Attribute::EXPERIENCE)->getValue();
-		// TODO: add ExperienceLevelUpCalculater back. (Wait.. its in Human.php but under a new name)
+	public function getExperienceLevel(){
+		return $this->getXpLevel();
 	}
-
-	public function setExp($exp){
-		$this->server->getPluginManager()->callEvent($ev = new PlayerExperienceChangeEvent($this, $exp));
-		if(!$ev->isCancelled()){
-			$this->attributeMap->getAttribute(Attribute::EXPERIENCE)->setValue($amount);
-		}
-		// TODO: add ExperienceLevelUpCalculater back.
+	
+	public function setExperienceLevel($level){
+		return $this->setXpLevel($level);
 	}
-
-	public function addExp($exp){
-		$this->server->getPluginManager()->callEvent($ev = new PlayerExperienceChangeEvent($this, $this->attributeMap->getAttribute(Attribute::EXPERIENCE)->getValue() + $exp));
-		if(!$ev->isCancelled()){
-			$this->attributeMap->getAttribute(Attribute::EXPERIENCE)->setValue($this->attributeMap->getAttribute(Attribute::EXPERIENCE)->getValue() + $exp);
-		}
-	}
-
-	public function getExpLevel(){
-		return $this->attributeMap->getAttribute(Attribute::EXPERIENCE_LEVEL)->getValue();
-	}
-
-	public function setExpLevel($level){
-		$this->attributeMap->getAttribute(Attribute::EXPERIENCE)->setValue($level);
-	}
-//TODO: maybe add getexplevel etc back.
-	/** Experience End **/
 	
 	public function getLeaveMessage(){
 		return new TranslationContainer(TextFormat::YELLOW . "%multiplayer.player.left", [
@@ -720,14 +734,6 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	 */
 	public function isSleeping(){
 		return $this->sleeping !== null;
-	}
-
-	/**
-	*
-	* @deprecated
-	*/
-	public function getAdditionalChar(){
-		return NULL;
 	}
 
 	public function getInAirTicks(){
@@ -1438,13 +1444,6 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
         }
 
 		foreach($blocksInside as $block){
-			/*
-			if($block instanceof Liquid){
-				if($block->round() != $this->round()){
-					return;
-				}
-			}
-			*/
 			$block->onEntityCollide($this);
 		}
 	}
@@ -2242,15 +2241,17 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 							$item->setCount($item->getCount() - 1);
 							$this->inventory->setItemInHand($item->getCount() > 0 ? $item : Item::get(Item::AIR));
 						}
-					}
-					elseif($item->getId() === Item::FISHING_ROD){
+					}elseif($item->getId() === Item::FISHING_ROD){
+						if($this->getHook()->closed){
+							$this->setHook();
+						}
 						if ($this->getHook() !== null && $this->getHook() instanceof FishingHook){
 							$this->server->getPluginManager()->callEvent($fish = new PlayerFishEvent($this, $item, $this->getHook()));
 							if (!$ev->isCancelled()){
 								$damageRod = $this->getHook()->reelLine();
 								#$this->unlinkHookFromPlayer($this);
 							}
-						} else {
+						}else{
 							$f = 0.6;
 							$nbt = new CompoundTag("", [
 								"Pos" => new ListTag("Pos", [
@@ -3215,7 +3216,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 		parent::saveNBT();
 		if($this->level instanceof Level){
 			$this->namedtag->Level = new StringTag("Level", $this->level->getName());
-			if($this->spawnPosition instanceof Position and $this->spawnPosition->getLevel() instanceof Level){
+			if($this->spawnPosition instanceof Position and $this->spawnPosition->getLevel() instanceof Level and $this->spawnPosition->getLevel()->getProvider() !== null){
 				$this->namedtag["SpawnLevel"] = $this->spawnPosition->getLevel()->getName();
 				$this->namedtag["SpawnX"] = (int) $this->spawnPosition->x;
 				$this->namedtag["SpawnY"] = (int) $this->spawnPosition->y;

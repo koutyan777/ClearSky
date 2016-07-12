@@ -135,7 +135,9 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 
 	public function addSaturation(float $amount){
 		$attr = $this->attributeMap->getAttribute(Attribute::SATURATION);
-		$attr->setValue($attr->getValue() + $amount, true);
+		$amount += $attr->getValue();
+		$amount = max(min($amount, $attr->getMaxValue()), $attr->getMinValue());
+		$this->setSaturation($amount);
 	}
 
 	public function getExhaustion(){
@@ -219,11 +221,11 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 
 	public static function getTotalXpForLevel(int $level){
 		if($level <= 16){
-			return $level ** 2 + $level * 6;
+			return $level * ($level + 6);
 		}elseif($level < 32){
-			return $level ** 2 * 2.5 - 40.5 * $level + 360;
+			return $level * ($level * 2.5 - 40.5) + 360;
 		}
-		return $level ** 2 * 4.5 - 162.5 * $level + 2220;
+		return $level * ($level * 4.5 - 162.5) + 2220;
 	}
 
 	public function getInventory(){
