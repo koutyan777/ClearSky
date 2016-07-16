@@ -10,19 +10,18 @@
 # We present you: ClearSky-Sunrise ~ A [PM](https://github.com/PocketMine/PocketMine-MP) fork (PHP7+5) 
 ClearSky is an ultra fast Minecraft: Pocket Edition server software with clean code and stable features. It was initially designed for production servers.
 
-**TravisCI Build Status** [![TravisCI](https://travis-ci.org/ClearSkyTeam/ClearSky.svg?branch=php7-0.15)](https://travis-ci.org/ClearSkyTeam/ClearSky "TravisCI Build Status")
-**Jenkins Build Status** [![Build Status](http://jenkins.clearskyteam.org/buildStatus/icon?job=ClearSky-php7)](http://jenkins.clearskyteam.org/job/ClearSky-php7/ "Jenkins Build Status")
+**TravisCI Build Status** [![TravisCI](https://travis-ci.org/ClearSkyTeam/ClearSky.svg)](https://travis-ci.org/ClearSkyTeam/ClearSky "TravisCI Build Status")
+**CircleCI Build Status** [![Build Status](https://circleci.com/gh/ClearSkyTeam/ClearSky.svg?style=shield)](https://circleci.com/gh/ClearSkyTeam/ClearSky "CircleCI Build Status")
 
 
  - We may take code from other GPL licenced projects, but most features are fully-rewritten for ClearSky.
- - The projects we took code from [Genisys](https://github.com/iTXTech/Genisys),[Nukkit](https://github.com/Nukkit/Nukkit),[IM](https://github.com/ImagicalCorp/ImagicalMine). Everytime we take code from other projects we reference the commit in the commit title or description!
- - Here is an Telegram group, where you can communicate with us: [Telegram/ClearSky] (https://telegram.me/joinchat/AlErxD3AN_GOgeSAcS0twA).
+ - The projects we take some code from are [Genisys](https://github.com/iTXTech/Genisys), [Nukkit](https://github.com/Nukkit/Nukkit) and [IM](https://github.com/ImagicalCorp/ImagicalMine) (last one is dead). Everytime we take code from other projects we reference the commit in the commit title or description!
+ - Here is an Telegram group, where you can communicate with us: [Telegram/ClearSky](https://telegram.me/joinchat/AlErxD3AN_GOgeSAcS0twA).
  - [Look here how fast ClearSky starts with 70 plugins and 20 worlds!](http://wolvesfortress.de/ezgif-1446650535.gif)
  - Inofficial Test Server : Creative IP: WolvesFortress.de Port: **19134** *Often offline, but if online, latest version*
 
 ## Where can I get a phar?
- - You can get an auto build phar here: [Jenkins CI](http://jenkins.clearskyteam.org/).
-
+ - You can get the latest auto build phar here: [CircleCI](http://robskebueba.no-ip.biz/CSPhar.php).
  - You can get an optimized PHP environment here: [ClearSkyTeam/PHPbinary](https://github.com/ClearSkyTeam/PHPbinary).
  - You can get a Multicraft config demo here: [ClearSkyTeam/MulticraftConfig](https://github.com/ClearSkyTeam/MulticraftConfig).
 
@@ -64,18 +63,17 @@ ClearSky is not just for a CLEAN feel for users - it's also for developers!<br>
 # Te presentamos: ClearSky-Sunrise ~ Una Bifurcación (o Fork) de [PocketMine](https://github.com/PocketMine/PocketMine-MP) (PHP5) 
 ClearSky es un software de servidor rapido para Minecraft: Pocket Edition limpio y con caracteristicas estables. Fue diseñado para los servidores de producción.
 
-**Estado de la compilación de TravisCI** [![TravisCI](https://travis-ci.org/ClearSkyTeam/ClearSky.svg?branch=0.14.0)](https://travis-ci.org/ClearSkyTeam/ClearSky "TravisCI Build Status")
-**Estado de la compilación de Jenkins** [![Build Status](http://jenkins.clearskyteam.org/buildStatus/icon?job=ClearSky)](http://jenkins.clearskyteam.org/job/ClearSky-php7/ "Jenkins Build Status")
-
+**Estado de la compilación de TravisCI** [![TravisCI](https://travis-ci.org/ClearSkyTeam/ClearSky.svg)](https://travis-ci.org/ClearSkyTeam/ClearSky "TravisCI Build Status")
+**Estado de la compilación de CircleCI** [![Build Status](https://circleci.com/gh/ClearSkyTeam/ClearSky.svg?style=shield)](https://circleci.com/gh/ClearSkyTeam/ClearSky "CircleCI Build Status")
 
  - Tomamos codigo de otros proyectos pero la mayoria de las caracteristicas las reescribimos para ClearSky.
  - Lista de proyectos de los que tomamos codigo [Genisys](https://github.com/iTXTech/Genisys),[Nukkit](https://github.com/Nukkit/Nukkit),[IM](https://github.com/ImagicalCorp/ImagicalMine). Cada vez que tomememos codigo de algún proyecto lo pondremos en la descripción o en el titulo del cambio!
- - Nuestro grupo de Telegram, para que hables con nosotros: [Telegram/ClearSky] (https://telegram.me/joinchat/AlErxD3AN_GOgeSAcS0twA).
+ - Nuestro grupo de Telegram, para que hables con nosotros: [Telegram/ClearSky](https://telegram.me/joinchat/AlErxD3AN_GOgeSAcS0twA).
  - [Mira como ClearSky abre así de rapido con con 70 plugins y 20 mundos](http://wolvesfortress.de/ezgif-1446650535.gif)
  - Servidor de pruebas no oficial : IP: WolvesFortress.de Puerto: **19134** *A menudo fuera de línea, pero si lo esta posee la última versión de ClearSky.*
 
 ## Donde consigo una compilacion (Phar)?
- - Consiguelo aqui: [Jenkins CI](http://jenkins.clearskyteam.org/).
+ - Consiguelo aqui: [CircleCI](http://robskebueba.no-ip.biz/CSPhar.php).
  - Consigue un tiempo de ejecución de PHP optimizado: [ClearSkyTeam/PHPbinary](https://github.com/ClearSkyTeam/PHPbinary).
  - Consigue una prueba de Multicraft aqui: [ClearSkyTeam/MulticraftConfig](https://github.com/ClearSkyTeam/MulticraftConfig).
  - O usa el instalador en: [ClearSkyTeam/Installer](https://github.com/ClearSkyTeam/Installer)
@@ -123,7 +121,7 @@ ClearSky no tiene una sensación limpia solo para los Usuarios, Sino para los de
 
 ## 在哪里可以下载到打包好的phar?
  - **注意：在运行晴空之前，请删除pocketmine.yml以便于晴空优化您的配置**
- - 你可以在这里获取一个自动打包的phar: [Jenkins CI](http://jenkins.clearskyteam.org/).
+ - 你可以在这里获取一个自动打包的phar: [CircleCI](http://robskebueba.no-ip.biz/CSPhar.php).
  - 你可以在这里获取一个优化的PHP运行环境: [ClearSkyTeam/PHPbinary](https://github.com/ClearSkyTeam/PHPbinary).
  - 你可以在这里获得一个Multicraft配置文件样例: [ClearSkyTeam/MulticraftConfig](https://github.com/ClearSkyTeam/MulticraftConfig).
 
@@ -160,7 +158,7 @@ ClearSky no tiene una sensación limpia solo para los Usuarios, Sino para los de
 クリアスカイはコードが綺麗で、安定した機能を備えた超高速なMinecraft: Pocket Editionサーバーソフトウェアです。当初は商用サーバー用に設計されました。<br>
 
 **TravisCIのビルドの状況** [![TravisCI](https://travis-ci.org/ClearSkyTeam/ClearSky.svg?branch=master)](https://travis-ci.org/ClearSkyTeam/ClearSky "TravisCIのビルドの状況")
-**Jenkinsのビルドの状況** [![Build Status](http://jenkins.clearskyteam.org/buildStatus/icon?job=ClearSky)](http://jenkins.clearskyteam.org/job/ClearSky-php7/ "Jenkinsのビルドの状況")
+**CircleCIのビルドの状況**[![Build Status](https://circleci.com/gh/ClearSkyTeam/ClearSky.svg?style=shield)](https://circleci.com/gh/ClearSkyTeam/ClearSky "CircleCIのビルドの状況")
 
 
  - 他のGPLライセンスプロジェクトのコードを使用している部分もありますが、殆どはClearSkyによって書き換えられた物です。
@@ -174,7 +172,7 @@ ClearSky no tiene una sensación limpia solo para los Usuarios, Sino para los de
  - はい. しかし、先に安定板の機能を作り, PHP7にアップデートします。
  
 ## どこで私はpharを手に入れれますか？
- - 自動でビルドされたphar: [Jenkins CI](http://jenkins.clearskyteam.org/).
+ - 自動でビルドされたphar: [CircleCI](http://robskebueba.no-ip.biz/CSPhar.php).
  - 最適化されたPHP環境(bin): [ClearSkyTeam/PHPbinary](https://github.com/ClearSkyTeam/PHPbinary).
  - Multicraftの設定例: [ClearSkyTeam/MulticraftConfig](https://github.com/ClearSkyTeam/MulticraftConfig).
 
@@ -221,7 +219,7 @@ ClearSky є ультра-швидким програмним забезпече�
 
 ## Де я можу отримати phar?
  - **Перед першим запуском або оновленням ClearSky видаліть pocketmine.yml для оновленя налаштувань.**
- - Ви можете отримати авто-генерований phar тут: [Jenkins CI](http://jenkins.clearskyteam.org/).
+ - Ви можете отримати авто-генерований phar тут: [CircleCI](http://wolvesfortress.de/circleci.php).
  - Ви можете отримати PHP каталог тут: [ClearSkyTeam/PHPbinary](https://github.com/ClearSkyTeam/PHPbinary).
  - Ви можете отримати демо версію конфігурації для Multicraft тут: [ClearSkyTeam/MulticraftConfig](https://github.com/ClearSkyTeam/MulticraftConfig).
 
@@ -264,7 +262,7 @@ ClearSky призначений не тільки для звичайних ко
 ClearSky adalah sebuah perangkat lunak yang sangat cepat untuk Minecraft: Pocket Edition server dengan kode-kode yang ditata sangat rapih dan memiliki fitur-fitur yang juga sangat stabil. pada awalnya proyek ini dibuat untuk server produksi. (Diterjemahkan kedalam Bahasa Indonesia oleh Darrell @da123rrell dan disunting oleh Kennan @KennanFatt)
 
 **Status Pembuatan di TravisCI** [![TravisCI](https://travis-ci.org/ClearSkyTeam/ClearSky.svg?branch=php7)](https://travis-ci.org/ClearSkyTeam/ClearSky "Status pembuatan di TravisCI")
-**Status Pembuatan di Jenkins** [![Build Status](http://jenkins.clearskyteam.org/buildStatus/icon?job=ClearSky-php7)](http://jenkins.clearskyteam.org/job/ClearSky-php7/ "Status pembuatan di Jenkins")
+**Status Pembuatan di CircleCI** [![Build Status](https://circleci.com/gh/ClearSkyTeam/ClearSky.svg?style=shield)](https://circleci.com/gh/ClearSkyTeam/ClearSky "Status pembuatan di CircleCI")
 
 
  - Kami mungkin mengambil beberapa kode dari proyek-proyek berlisensi GPL yang lain, tetapi sebagian besar telah ditulis kembali oleh ClearSky.
@@ -276,7 +274,7 @@ ClearSky adalah sebuah perangkat lunak yang sangat cepat untuk Minecraft: Pocket
 ## Dimana Saya bisa mendapatkan file phar?
  - Anda bisa mendapatkanya, disini [ClearSkyTeam/ClearSkyPhar](https://github.com/ClearSkyTeam/ClearSkyPhar)
 
-[//]: # (Anda juga bisa mendapatkan file Phar yang telah dibuat otomatis, disini : [Jenkins CI](http://jenkins.clearskyteam.org/).)
+[//]: # (Anda juga bisa mendapatkan file Phar yang telah dibuat otomatis, disini : [CircleCI](http://robskebueba.no-ip.biz/CSPhar.php).
 
  - Anda bisa mendapatkan PHP Environment yang telah di optimalkan, disini : [ClearSkyTeam/PHPbinary](https://github.com/ClearSkyTeam/ClearSkyPhar#BIN).
  - Anda bisa mendapatkan pengaturan Multicraft Demo, disini : [ClearSkyTeam/MulticraftConfig](https://github.com/ClearSkyTeam/MulticraftConfig).
