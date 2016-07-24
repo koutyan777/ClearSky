@@ -131,6 +131,8 @@ use pocketmine\block\Air;
 use pocketmine\math\Math;
 use pocketmine\inventory\EnchantInventory;
 use pocketmine\inventory\AnvilInventory;
+use pocketmine\entity\Rideable;
+use pocketmine\entity\Horse;
 
 /**
  * Main class that handles networking, recovery, and packet sending to the server part
@@ -2465,6 +2467,8 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 						$this->server->getPluginManager()->callEvent($ev);
 						if($ev->isCancelled()){
 							$this->sendData($this);
+						}elseif($this->isLinked() && $this->getlinkedTarget() instanceof Horse){
+							$this->unlinkEntity($this->getlinkedTarget());
 						}else{
 							$this->setSneaking(true);
 						}
@@ -2526,8 +2530,8 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				/**
 				 * EntityLink *
 				 */
-				if($target !== null && $target->isVehicle()){
-					if($packet->action === InteractPacket::ACTION_RIGHT_CLICK){
+				if($target !== null && $target instanceof Rideable){
+					if($packet->action === InteractPacket::ACTION_RIGHT_CLICK && !$this->isSneaking()){
 						$this->linkEntity($target);
 						break;
 					}
