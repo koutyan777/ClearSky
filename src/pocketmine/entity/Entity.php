@@ -338,7 +338,7 @@ abstract class Entity extends Location implements Metadatable{
 		if(!isset($this->namedtag->Air)){
 			$this->namedtag->Air = new ShortTag("Air", 300);
 		}
-		$this->setDataProperty(self::DATA_AIR, self::DATA_TYPE_SHORT, $this->namedtag["Air"]);
+		$this->setDataProperty(self::DATA_AIR, self::DATA_TYPE_SHORT, $this->namedtag["Air"], false);
 
 		if(!isset($this->namedtag->OnGround)){
 			$this->namedtag->OnGround = new ByteTag("OnGround", 0);
@@ -764,7 +764,8 @@ abstract class Entity extends Location implements Metadatable{
 		}
 
 		$this->setLastDamageCause($source);
-		$this->getHealth() - $source->getFinalDamage() <= 0 ? $this->setHealth(0) : $this->setHealth($this->getHealth() - $source->getFinalDamage());
+
+		$this->setHealth($this->getHealth() - $source->getFinalDamage());
 	}
 
 	/**
@@ -773,13 +774,13 @@ abstract class Entity extends Location implements Metadatable{
 	 *
 	 */
 	public function heal($amount, EntityRegainHealthEvent $source){
-        $this->server->getPluginManager()->callEvent($source);
-        if($source->isCancelled()){
-            return;
-        }
+		$this->server->getPluginManager()->callEvent($source);
+		if($source->isCancelled()){
+			return;
+		}
 
-        $this->setHealth($this->getHealth() + $source->getAmount());
-    }
+		$this->setHealth($this->getHealth() + $source->getAmount());
+	}
 
 	/**
 	 * @return int
@@ -1225,6 +1226,7 @@ abstract class Entity extends Location implements Metadatable{
 		}
 		return false;
 	}
+
 	public function isInsideOfWater(){
 		$block = $this->level->getBlock($this->temporalVector->setComponents(Math::floorFloat($this->x), Math::floorFloat($y = ($this->y + $this->getEyeHeight())), Math::floorFloat($this->z)));
 
@@ -1690,11 +1692,12 @@ abstract class Entity extends Location implements Metadatable{
 	 *
 	 * @return bool
 	 */
-	public function setDataProperty($id, $type, $value){
+	public function setDataProperty($id, $type, $value, $send = true){
 		if($this->getDataProperty($id) !== $value){
 			$this->dataProperties[$id] = [$type, $value];
-
-			$this->sendData($this->hasSpawned, [$id => $this->dataProperties[$id]]);
+			if($send === true) {
+				$this->sendData($this->hasSpawned, [$id => $this->dataProperties[$id]]);
+			}
 
 			return true;
 		}
