@@ -13,6 +13,7 @@ use pocketmine\entity\Squid;
 use pocketmine\entity\Villager;
 use pocketmine\entity\Zombie;
 use pocketmine\entity\Wolf;
+use pocketmine\entity\Projectile;
 use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\inventory\Fuel;
 use pocketmine\item\enchantment\Enchantment;
@@ -608,7 +609,7 @@ class Item{
 		$launched = Entity::createEntity($this->getEntityName(), $player->chunk, $nbt, $player);
 		$launched->setMotion($launched->getMotion()->multiply($f));
 		if($launched instanceof Projectile){
-			$player->server->getPluginManager()->callEvent($projectileEv = new ProjectileLaunchEvent($launched));
+			$player->getServer()->getPluginManager()->callEvent($projectileEv = new ProjectileLaunchEvent($launched));
 			if($projectileEv->isCancelled()){
 				$launched->kill();
 			}else{
