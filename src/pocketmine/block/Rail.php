@@ -79,7 +79,7 @@ class Rail extends Flowable{
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
 		$downBlock = $this->getSide(Vector3::SIDE_DOWN);
 
-		if($downBlock instanceof Rail or !$this->isBlock($downBlock)){
+		if($downBlock instanceof Rail or $downBlock instanceof Transparent){
 			return false;
 		}
 

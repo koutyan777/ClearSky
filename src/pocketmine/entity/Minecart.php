@@ -368,7 +368,7 @@ class Minecart extends Vehicle{
 			$this->setPosition($upPosition);
 		}
 		$this->requestedPosition = $this->add($dx, $dy, $dz);
-		$this->move($dx, $dy, $dz);
+		$this->move($this->add($dx, $dy, $dz));
 	}
 
 	/**
