@@ -205,7 +205,7 @@ abstract class Entity extends Location implements Metadatable{
 	protected $linkedEntity = null;
 	/** @deprecated */
 	protected $isLinked = false;
-	protected $linkType = LINK_EMPTY;
+	protected $linkType = self::LINK_EMPTY;
 	
 	public $isLeashed = false;
 	public $leadHolder = null;
