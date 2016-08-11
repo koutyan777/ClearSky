@@ -75,56 +75,20 @@ class Minecart extends Vehicle{
 		//parent::onUpdate($currentTick);
 
 		if($this->isAlive()){
-			$movingType = $this->getLevel()->getServer()->getProperty("minecart-moving-type", 1);
-			if($movingType == -1) return false;
-			elseif($movingType == 0){
-				$p = $this->getlinkedTarget();
-				if($p instanceof Player){
-					$this->motionX = -sin($p->getYaw() / 180 * M_PI);
-					$this->motionZ = cos($p->getYaw() / 180 * M_PI);
+			$p = $this->getlinkedTarget();
+			if($p instanceof Player){
+				echo("gotEntInMinecart");
+				echo("isPlayer");
+				var_dump($this->state);
+				if ($this->state == Minecart::STATE_INITIAL) {
+					$this->checkIfOnRail();
+					echo("__doPlaceMinecartOnRAIL");
 				}
-				$target = $this->getLevel()->getBlock($this->add($this->motionX, 0, $this->motionZ)->round());
-				$target2 = $this->getLevel()->getBlock($this->add($this->motionX, 0, $this->motionZ)->floor());
-				if($target->getId() != ItemItem::AIR or $target2->getId() != ItemItem::AIR) $this->motionY = $this->gravity * 3;
-				else $this->motionY -= $this->gravity;
-
-				if($this->checkObstruction($this->x, $this->y, $this->z)){
-					$hasUpdate = true;
-				}
-
-				$this->move($this->motionX, $this->motionY, $this->motionZ);
-				$this->updateMovement();
-
-				$friction = 1 - $this->drag;
-
-				if($this->onGround and (abs($this->motionX) > 0.00001 or abs($this->motionZ) > 0.00001)){
-					$friction = $this->getLevel()->getBlock($this->temporalVector->setComponents((int) floor($this->x), (int) floor($this->y - 1), (int) floor($this->z) - 1))->getFrictionFactor() * $friction;
-				}
-
-				$this->motionX *= $friction;
-				$this->motionY *= 1 - $this->drag;
-				$this->motionZ *= $friction;
-
-				if($this->onGround){
-					$this->motionY *= -0.5;
-				}
-			}elseif($movingType == 1){
-				$p = $this->getlinkedTarget();
-				if($p instanceof Player){
-					echo("gotEntInMinecart");
-					echo("isPlayer");
-					var_dump($this->state);
-					if ($this->state == Minecart::STATE_INITIAL) {
-						$this->checkIfOnRail();
-						echo("__doPlaceMinecartOnRAIL");
-					}
-					//after centering immediate calcing if on rail
-					if ($this->state == Minecart::STATE_ON_RAIL) {
-						echo("__doMinecartMovement");
-						$hasUpdate = $this->forwardOnRail($p);
-						$this->updateMovement();
-					}
-					echo("wtf why no __?");
+				//after centering immediate calcing if on rail
+				if ($this->state == Minecart::STATE_ON_RAIL) {
+					echo("__doMinecartMovement");
+					$hasUpdate = $this->forwardOnRail($p);
+					$this->updateMovement();
 				}
 			}
 		}
