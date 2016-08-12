@@ -189,7 +189,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	protected $startAction = -1;
 	/** @var Vector3 */
 	protected $sleeping = null;
-	protected $clientID = null;
+	protected $clientId = null;
 	private $isXbox = null;
 	private $xboxData = null;
 	private $webtokens = [];
@@ -642,7 +642,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 		$this->lastBreak = PHP_INT_MAX;
 		$this->ip = $ip;
 		$this->port = $port;
-		$this->clientID = $clientID;
+		$this->clientId = $clientId;
 		$this->loaderId = Level::generateChunkLoaderId($this);
 		$this->chunksPerTick = (int) $this->server->getProperty("chunk-sending.per-tick", 4);
 		$this->spawnThreshold = (int) $this->server->getProperty("chunk-sending.spawn-threshold", 56);
